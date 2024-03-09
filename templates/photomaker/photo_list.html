@@ -1,0 +1,244 @@
+
+
+    <!-- Dashboard Counts Section-->
+    <div class="container">
+      <div class="my-2">
+        {% if photos %} 
+        <div class="table" id="results">
+          <div class='theader'>
+            <div class='table_header'>  
+          </div>
+            <div class='table_header'>Photo</div>
+            <div class='table_header'>DOWNLOAD IN A4 SHEETS</div>
+            <div class='table_header'>DOWNLOAD IN 4BY6 SHEETS</div>
+            <div class='table_header'>DOWNLOAD SINGLE PHOTO</div>
+            <div class='table_header'>DELETE</div>
+            
+          </div>
+          {% csrf_token %}
+            {% for photos in photos %}
+          <div class='table_row'>
+            {% comment %}  {% endcomment %}
+            
+            <div class='table_small'>
+              <div class='table_cell'>Select</div>
+              <div class='table_cell'> 
+                 <input type="checkbox" id="" class="check-box" name="photo_id[]" value="{{photos.id}}"  >
+                </div>
+            </div>
+            {% comment %}  {% endcomment %}
+            <div class='table_small'>
+              <div class='table_cell'>Photos</div>
+              <div class='table_cell'>
+                {% comment %}  {% endcomment %}
+                <a
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Download"
+
+              >
+                <img
+                src="{{ photos.file.url }}"
+                style="
+                  width: 50px;
+                  height: 50px;
+                  text-align: center;
+                  border:1px solid #111;
+
+                "
+              />
+              </a>
+              {% comment %}  {% endcomment %}
+              </div>
+            </div>
+            {% comment %}  {% endcomment %}
+            <div class='table_small'>
+              <div class='table_cell'>Download</div>
+              <div class='table_cell'>
+                <div class="dropdown px-2 mx-2 ">
+                  <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                  Photo Download
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li>
+                      <a
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title="Download 6 Photos"
+                      class="dropdown-item"
+                      href="{{ photos.get_absolute_url }}/6"
+                    >
+                    <i class="bi bi-arrow-down-circle me-1"></i>Download 6 Photos
+                  </a>
+                </li>
+                <li>
+                  <a
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Download 12 Photos"
+                  class="dropdown-item"
+                  href="{{ photos.get_absolute_url }}/12"
+                >
+                <i class="bi bi-arrow-down-circle me-1"></i>Download 12 Photos
+              </a>
+            </li>
+            <li>
+              <a
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Download 18 Photos"
+              class="dropdown-item"
+              href="{{ photos.get_absolute_url }}/18"
+            >
+            <i class="bi bi-arrow-down-circle me-1"></i>Download 18 Photos
+          </a>
+        </li>
+        <li>
+          <a
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="Download 24 Photos"
+          class="dropdown-item"
+          href="{{ photos.get_absolute_url }}/24"
+        >
+           <i class="bi bi-arrow-down-circle me-1"></i>Download 24 Photos
+           </a>
+            </li>
+            <li>
+              <a
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Download 30 Photos"
+              class="dropdown-item"
+              href="{{ photos.get_absolute_url }}/30"
+            >
+            <i class="bi bi-arrow-down-circle me-1"></i>Download 30 Photos
+          </a>
+        </li>
+        <li>
+          <a
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="Download 36 Photos"
+          class="dropdown-item"
+          href="{{ photos.get_absolute_url }}/36"
+        >
+        <i class="bi bi-arrow-down-circle me-1"></i>Download 36 Photos
+      </a>
+    </li>
+    <li>
+      <a
+      data-bs-toggle="tooltip"
+      data-bs-placement="bottom"
+      title="Download 42 Photos"
+      class="dropdown-item"
+      href="{{ photos.get_absolute_url }}/full"
+    >
+    <i class="bi bi-arrow-down-circle me-1"></i>Download 42 Photos
+      </a>
+       </li>
+          </div>
+            </div>
+            </div>
+            {% comment %}  {% endcomment %}
+            <div class='table_small'>
+              <div class='table_cell'>Download</div>
+              <div class='table_cell'>
+                <div class="dropdown px-2 mx-2">
+                  <a class="btn btn-success dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    Photo Download
+                  </a>
+                
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li>
+                      <a
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title="Download 9 Photos"
+                      class="dropdown-item"
+                      href="{{ photos.get_absolute_url }}/4by6"
+                    >
+                    <i class="bi bi-arrow-down-circle me-1"></i>Download 9 Photos
+                  </a>
+                </li>
+              </ul>
+              </div>
+              </div>
+            </div>
+            {% comment %}  {% endcomment %}
+            <div class='table_small'>
+              <div class='table_cell'>Download</div>
+              <div class='table_cell'>
+                <div class="dropdown px-2 mx-2">
+                  <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    Single Photo Download
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li>
+                      <a
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title="Download Single Photos"
+                      class="dropdown-item"
+                      href="{{ photos.get_absolute_url }}/one"
+                    >
+                    <i class="bi bi-arrow-down-circle me-1"></i>Download Single Photo
+                  </a>
+                </li>
+              </ul>
+              </div>
+              </div>
+            </div>
+            {% comment %}  {% endcomment %}
+            <div class='table_small'>
+              <div class='table_cell'>Delete</div>
+              <div class='table_cell'>
+                <div class="dropdown px-2 mx-2 ">
+                  <form
+                    method="POST"
+                    action="{{ photos.get_absolute_url }}/delete"
+                  >
+                    {% csrf_token %}
+                    <input name="_method" type="hidden" value="DELETE" />
+                  <button
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title="Delete"
+                      class="btn btn-danger"
+                      type="submit"
+                      onclick="confirmFunction()"
+                    >
+                    <i class="bi bi-trash pe-2"></i>Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+       
+          {% comment %}  {% endcomment %}
+          {% endfor %} {% else %}
+          <div class="alert-danger"><img
+            src="/static/images/empity.svg"
+            style="height: 400.6px;"
+          
+          />
+        </div>
+        {% endif %}
+          </div> 
+          {% if photos %} 
+          <button type="submit"  id="download_btn" class="btn  btn-secondary">
+            <i class="bi bi-download"></i> Download the Selected
+          </button>
+          {% endif %}
+          <!-- Copyright -->
+         <div class="text-center p-3 footer fixed-bottom">
+         Codefyn Services © 2023 All Rights Reserved.
+          </div>
+  <!-- Copyright -->
+        </div> 
+      </div>
+    </div>
+   
+    <!-- end -->
+ 

@@ -1,0 +1,93 @@
+<header>
+  <div class="container">
+     <div class="row">
+        <div class="col-md-12 col-sm-12 col-lg-12 col-xl-3">
+           <div class="logo">
+            <a class="navbar-brand" href="#">
+              <img
+                class=""
+                src="/static/images/logo.svg"
+                width="200"
+                height="80"
+                alt=""
+                class="d-inline-block align-text-top"
+              />
+            </a>
+           </div>
+           <div class="mob-menu">
+              <span>
+                <i class="bi bi-list"></i>
+              </span>
+           </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-lg-12 col-xl-9">
+           <div class="main-menu ">
+              <ul class="nav">
+                 <li><a class="nav" href="{% url 'photo:index' %}"> Home </a> </li>
+                 <li><a  class="nav" href="{% url 'bgremove:index' %}">Remove Background </a></li>
+                 <li><a  class="nav" href="{% url 'photo:pass_photo' %}">Passport Photo</a></li>
+                 </ul>
+              <ul class="main-menu text-center">
+                
+                {% if user.is_authenticated %}
+                <div class="dropdown">
+                  <button
+                    class="btn btn-default dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                   
+                  <span class="btn rounded-circle btn-primary"> {{user.username|slice:":1"}}
+                  </button>
+              
+                  <ul class="dropdown-menu text-start" aria-labelledby="dropdownMenuButton1">
+                    <li>
+                      <a class="dropdown-item" href="{% url 'photo:index' %}">
+                        <i class="bi bi-speedometer me-2"></i>Home</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'photo:pass_photo_list' %}">
+                      <i class="bi bi-image me-2"></i>Passport Size Photos Download</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item border-bottom" href="{% url 'bgremove:output_list' %}">
+                      <i class="bi bi-image me-2"></i>Bg Removed Photos Download</a>
+                    </li>
+                    <li>
+                      {% load crispy_forms_tags %}
+                      <div class="text-center">
+                      <form method="post" action="{% url 'account_logout' %}">
+                        {% csrf_token %}
+                        <button
+                          class="dropdown-item"
+                          type="submit"
+                          onclick="confirmLogout()"
+                        >
+                          <i class="bi bi-box-arrow-right me-2 text-danger"></i>
+                          <span class="text-danger ">Log Out</span>
+                        </button>
+                      </form>
+                    </div>
+                        {% else %}
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                          <li class="nav-item">
+                            <a
+                              class="w-100 btn blue"
+                              href="{% url 'account_login'%}"
+                            >
+                            <i class="bi bi-person-lock me-2"></i>Login</a
+                            >
+                          </li>
+                        </ul>
+                  {% endif %}    
+              </ul>
+           </div>
+        </div>
+     </div>
+  </div>
+</header>
+
+
+</div>

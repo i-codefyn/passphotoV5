@@ -1,0 +1,107 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Progress Bar Upload{% endblock %}
+{% block javascript %}
+  {# JQUERY FILE UPLOAD SCRIPTS #}
+  <script src="{% static 'js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+
+  {# PHOTOS PAGE SCRIPTS #}
+  <script src="{% static 'js/progress-bar-upload.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <div style="margin-bottom: 20px;" class="text-center my-5 py-5">
+    <button type="button" class="btn btn-primary js-upload-photos">
+      <span class="glyphicon glyphicon-cloud-upload"></span> Upload photos
+    </button>
+    <input id="fileupload" type="file" name="image" multiple
+           style="display: none;"
+           data-url="{% url 'bgremove:index' %}"
+           data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+    </div>
+
+{% comment %}    
+      {% if photos %}
+      {% include 'bgremove/photo_list.html' %}
+      {% endif %} {% endcomment %}
+     <div class="container">
+      <table id="gallery" class="table table-bordered">
+        <thead>
+          <tr>
+            <th width="60%">Photo</th>
+            <th width="20%">Donwload</th>
+            <th width="20%">Action</th>
+          </tr>
+          
+        </thead>
+        <tbody>
+          {% for photo in photos %}
+            <tr>
+              <td>
+                <a href="{{ photo.image.url }}">
+                <img
+                src="{{ photo.image.url }}"
+                style="
+                  width: 124.8px;
+                  height: 153.6px;
+                  text-align: center;
+                  border:3px solid #111;
+                "
+              />
+            </a>
+         
+      
+</td>
+<td>
+  <a
+  data-bs-toggle="tooltip"
+  data-bs-placement="bottom"
+  title="Download"
+  class="btn btn-success"
+  href="{{ photo.get_absolute_url }}/download"
+  >
+<i class="bi bi-arrow-down-circle pe-1"></i> Download
+</a>
+</td>
+<td>
+  <form
+  method="POST"
+  action="{{ photo.get_absolute_url }}/delete"
+>
+  {% csrf_token %}
+  <input name="_method" type="hidden" value="DELETE" />
+  <button
+    data-bs-toggle="tooltip"
+    data-bs-placement="bottom"
+    title="Delete"
+    class="btn btn-danger"
+    type="submit"
+    onclick="confirmFunction()"
+  >
+    <i class="bi bi-trash pe-2"></i>Delete
+  </button>
+</form>
+</td>
+          
+     </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+     </div>
+  <div class="modal fade" id="modal-progress" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Uploading...</h4>
+        </div>
+        <div class="modal-body">
+          <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: 0%;">0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

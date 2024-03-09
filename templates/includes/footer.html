@@ -1,0 +1,87 @@
+<!-- Footer 6 - Bootstrap Brain Component -->
+<footer class="footer mt-5 ">
+
+  <!-- Widgets - Bootstrap Brain Component -->
+  <div class="bg-light py-2 border-top border-light-subtle">
+    <div class="container overflow-hidden">
+      <div class="row gy-3 gy-md-5 gy-xl-0 align-items-sm-center">
+        <div class="col-xs-12 col-sm-6 col-xl-3 order-0 order-xl-0">
+          <div class="footer-logo-wrapper text-center text-sm-start">
+            <a href="#!">
+              <img
+              class="footer-logo"
+              src="/static/images/logo.svg"
+              width="20"
+            
+              alt=""
+              class="d-inline-block align-text-top"
+             width="175" height="57"/>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-xl-6 order-2 order-xl-1">
+          <ul class="nav justify-content-center">
+            {% comment %} <li class="nav-item">
+              <a class="nav-link link-secondary px-2 px-md-3" href="#!">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link link-secondary px-2 px-md-3" href="#!">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link link-secondary px-2 px-md-3" href="#!">Advertise</a>
+            </li> {% endcomment %}
+            <li class="nav-item">
+              <a class="nav-link link-secondary px-2 px-md-3" href="{% url 'photo:terms' %}">Terms</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link link-secondary px-2 px-md-3" href="{% url 'photo:privacy' %}">Privacy</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-xl-3 order-1 order-xl-2">
+          <ul class="nav justify-content-center justify-content-sm-end">
+            <li class="nav-item">
+              <a class="nav-link link-dark px-3" href="https://www.facebook.com/codefyn">
+                <i class="bi bi-facebook"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link link-dark px-3" href="https://www.twitter.com/codefyn">
+                <i class="bi bi-twitter"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link link-dark px-3" href="https://www.instagram.com/codefyn">
+                <i class="bi bi-instagram"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link link-dark px-3" href="https://www.youtube.com/channel/UCQLMygVyHDQQTay35yuolAg">
+                <i class="bi bi-youtube"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright - Bootstrap Brain Component -->
+  <div class="bg-light py-1  border-top border-light-subtle">
+    <div class="container overflow-hidden">
+      <div class="row">
+        <div class="col">
+          <div class="footer-copyright-wrapper text-center">
+            &copy; 2024. All Rights Reserved.
+          </div>
+          <div class="credits text-secondary text-center mt-2 fs-7">
+            <a href="https://codefyn.com/" class="link-secondary text-decoration-none">Codefyn Services</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</footer>

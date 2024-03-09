@@ -1,0 +1,189 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="d-none" id="progress">
+  <h5 class="me-5">Image Uploading....</h5>
+  <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:40%"></div>
+  <div class="d-flex justify-content-center mt-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Processing image...</span>
+    </div>
+  </div>
+</div>
+  <style>
+    .not-visible {
+        display: none;
+    }
+  </style>
+ <!-- Img Upload-->
+ <main >
+ <div  class="container my-5 col-lg-6 col-md-6 ">
+  <div class="text-center form-style">
+      <div id="alert-box"></div>
+      <div id="image-box" class="mb-3">
+        <div class="upload-form-wrapper">
+          <div class="upload-form-container">
+            <h1>Upload Image</h1>
+            <div class="upload-container">
+              <div class="border-container">
+               
+                <form action="" id="image-form">
+                  {% csrf_token %}
+                  {{ form|crispy }}
+                </form>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+      <div class="btn-group not-visible " id="edit-btn" role="group">
+        <button type="button" class="btn btn-primary js-zoom-in">
+          <i class="bi bi-zoom-in"></i>
+        </button>
+        <button type="button" class="btn btn-secondary js-zoom-out">
+          <i class="bi bi-zoom-out"></i>
+        </button>
+        <button type="button" class="btn btn-warning js-rotes">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <button type="button" class="btn btn-danger js-rotes-anti">
+          <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+      <button class="btn  btn-success not-visible" id="confirm-btn"  onclick="loading()" type="submit">
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"style="display:none;" >
+        </span> Crop & Upload 
+      </button>
+    </div>
+    </div>
+    </div>
+  </div>
+</main>
+
+
+<script>
+const alertBox = document.getElementById('alert-box')
+const imageBox = document.getElementById('image-box')
+const imageForm = document.getElementById('image-form')
+const confirmBtn = document.getElementById('confirm-btn')
+const editBtn = document.getElementById('edit-btn')
+const input = document.getElementById('id_file')
+const csrf = document.getElementsByName('csrfmiddlewaretoken')
+input.addEventListener('change', () => {
+    alertBox.innerHTML = ""
+    confirmBtn.classList.remove('not-visible')
+    editBtn.classList.remove('not-visible')
+    const img_data = input.files[0]
+    const url = URL.createObjectURL(img_data)
+
+    imageBox.innerHTML = `<img src="${url}" id="image" width="500" height="500">`
+    var $image = $('#image')
+    console.log($image)
+   
+    $image.cropper({
+      
+      aspectRatio: 3 / 4,
+        crop: function (event) {
+            console.log(event.detail.x);
+            console.log(event.detail.y);
+            console.log(event.detail.width);
+            console.log(event.detail.height);
+            console.log(event.detail.rotate);
+            console.log(event.detail.scaleX);
+            console.log(event.detail.scaleY);
+        }
+    });
+    $(".js-zoom-in").click(function () {
+      $image.cropper("zoom", 0.1);
+    });
+
+    $(".js-zoom-out").click(function () {
+      $image.cropper("zoom", -0.1);
+    });
+    $(".js-rotes").click(function () {
+      $image.cropper('rotate',15);
+    });
+    $(".js-rotes-anti").click(function () {
+      $image.cropper('rotate',-15);
+    });
+
+    var cropper = $image.data('cropper');
+    confirmBtn.addEventListener('click', () => {
+        cropper.getCroppedCanvas().toBlob((blob) => {
+            console.log('confirmed')
+            const fd = new FormData();
+            fd.append('csrfmiddlewaretoken', csrf[0].value)
+            fd.append('file', blob, 'passphoto.png');
+            $.ajax({
+                type: 'POST',
+                url: imageForm.action,
+                enctype: 'multipart/form-data',
+                data: fd,
+                success: function (response) {
+                    console.log('success', response)
+                    swal.fire({
+                      title: 'Image Successfully Uploaded!',
+                      text: 'Do you want to go to the Download page?',
+                      icon: 'success',
+                      type: "success"
+                  }).then(function() {
+                    location.href = '/pass_photo/output_list/';
+                  });
+                       
+                },
+                error: function (error) {
+                    console.log('error', error)
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops..."+error,
+                      text: "Something went wrong! Try Again",
+                   
+                    });
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            })
+        })
+    })
+})
+
+
+
+  // FOrm Submit
+  function loading() {
+    $(".btn .spinner-border-sm").show();
+    $(".btn .btn-text").html("Loading");
+    
+  }
+  // end form submit
+
+
+  $(".js-zoom-in").click(function () {
+    $image.cropper("zoom", 0.1);
+  });
+
+  $(".js-zoom-out").click(function () {
+    $image.cropper("zoom", -0.1);
+  });
+  $(".js-rotes").click(function () {
+    $image.cropper('rotate',15);
+  });
+  $(".js-rotes-anti").click(function () {
+    $image.cropper('rotate',-15);
+  });
+{% comment %}  {% endcomment %}
+function onSubmit() {
+  let uploadForm = document.querySelector("#image-form");
+  let progress = document.querySelector("#progress");
+
+  uploadForm.setAttribute("class", "d-none");
+  progress.setAttribute("class", "d-block");
+
+  uploadForm.submit();
+}
+</script>
+
+{% endblock %}

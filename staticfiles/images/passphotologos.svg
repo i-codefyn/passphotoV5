@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1"
+xmlns="http://www.w3.org/2000/svg"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+width="320px" height="320px"
+xml:space="preserve">
+<g id="PathID_47" transform="matrix(2.93694, 0, 0, 2.93694, 37.05, 145.05)" opacity="1">
+<linearGradient
+id="LinearGradID_4" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-0.00111389, -0.00473022, -0.00299072, 0.00175476, -0.2, 1.95)" spreadMethod ="pad" x1="-819.2" y1="0" x2="819.2" y2="0" >
+<stop  offset="0" style="stop-color:#F18B1C;stop-opacity:1" />
+<stop  offset="1" style="stop-color:#CF211C;stop-opacity:1" />
+</linearGradient>
+<path style="fill:url(#LinearGradID_4) " d="M-0.95 -2.9Q2.1 -1.35 4.7 2.95L-4.7 2.95Q-3.8 -0.8 -2.25 -2.15Q-1.5 -2.9 -0.95 -2.9" />
+</g>
+<g id="PathID_48" transform="matrix(2.93694, 0, 0, 2.93694, 37.05, 145.05)" opacity="1">
+</g>
+<g id="PathID_49" transform="matrix(2.93694, 0, 0, 2.93694, 56.5, 149.3)" opacity="1">
+<path style="fill:#F4E82A;fill-opacity:1" d="M6 17.25Q4.5 1.4 -1.8 -9.55Q-3.8 -12.95 -6 -15.4L-7.85 -17.2L7.9 -17.2Q5.75 -1.9 6 17.25" />
+</g>
+<g id="PathID_50" transform="matrix(2.93694, 0, 0, 2.93694, 56.5, 149.3)" opacity="1">
+</g>
+<g id="PathID_51" transform="matrix(2.93694, 0, 0, 2.93694, 263.05, 151.5)" opacity="1">
+<path style="fill:#F4E82A;fill-opacity:1" d="M0.35 -16.05Q-8.45 1.1 -9.1 27.9L-9.15 27.9Q-8.45 -5.75 -0.55 -27.9L9.15 -27.9L6.45 -25.15Q3.15 -21.45 0.35 -16.05" />
+</g>
+<g id="PathID_52" transform="matrix(2.93694, 0, 0, 2.93694, 263.05, 151.5)" opacity="1">
+</g>
+<g id="PathID_53" transform="matrix(2.93694, 0, 0, 2.93694, 168.5, 151.45)" opacity="1">
+<linearGradient
+id="LinearGradID_5" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0, -0.0328217, -0.0207825, 0, 0, -5.45)" spreadMethod ="pad" x1="-819.2" y1="0" x2="819.2" y2="0" >
+<stop  offset="0" style="stop-color:#F4E82A;stop-opacity:1" />
+<stop  offset="1" style="stop-color:#C1711A;stop-opacity:1" />
+</linearGradient>
+<path style="fill:url(#LinearGradID_5) " d="M-21.4 -27.9L31.75 -27.9Q23.8 -5.75 23.1 27.9L-31.7 27.9Q-31.35 3.4 -26.35 -14.75Q-23.85 -23.8 -21.4 -27.9" />
+</g>
+<g id="PathID_54" transform="matrix(2.93694, 0, 0, 2.93694, 168.5, 151.45)" opacity="1">
+</g>
+<g id="PathID_55" transform="matrix(2.93694, 0, 0, 2.93694, 187.5, 172.1)" opacity="1">
+<radialGradient
+id="RadialGradID_6" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.0379944, 0, 0, -0.0599823, -12.9, 31.25)" spreadMethod ="pad" cx="0" cy="0" r="819.2" fx="0" fy="0" >
+<stop  offset="0"  style="stop-color:#F5E52A;stop-opacity:1" />
+<stop  offset="1"  style="stop-color:#D82721;stop-opacity:1" />
+</radialGradient>
+<path style="fill:url(#RadialGradID_6) " d="M28.7 -15.05Q18.75 -4.2 16.85 20.95L-38.2 20.95Q-36.7 -4.65 -26.6 -15.35Q-21.5 -20.65 -16.75 -20.9L38.25 -20.8Q33.65 -20.45 28.7 -15.05" />
+</g>
+<g id="PathID_56" transform="matrix(2.93694, 0, 0, 2.93694, 187.5, 172.1)" opacity="1">
+</g>
+</svg>

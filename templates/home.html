@@ -1,0 +1,120 @@
+
+
+{% block content %}
+<h1>Hello world</h1>
+<p>
+    <input type="search" id="algolia-doc-search" placeholder="Search" aria-label="Search docs" class="css-7dpbpx ds-input" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-labelledby="algolia-doc-search" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">    
+</p>
+
+
+
+
+<a href="{% url 'create'%}"> add</a>
+
+
+<div class="container">
+    <div class="card"> 
+
+        <!-- <table> -->
+            <table cellspacing="0" rules="all" border="1" id="Table1" style="border-collapse: collapse; text-align: center">
+            <thead>
+                <th>Product Name</th>
+                <th>Catagory</th>
+                <th>Price</th>
+                <th>Delete<input type="checkbox" id="select-all"></th>
+    
+            </thead>
+            <tbody>
+                {% csrf_token %}
+                {% for prod in products %}
+                <tr id="{{ prod.id }}">
+                    <td>{{ prod.name }}</td>
+                    <td>{{ prod.category }}</td>
+                    <td>{{ prod.price }}</td>
+                    <td><input type="checkbox" name="product_id[]" value="{{prod.id}}" id="delete_product" </td>
+                </tr>             
+                {% endfor %}
+               
+            </tbody>
+    
+        </table>
+       
+        
+    </div>
+    <div>
+        <button type="submit"  id="delete_btn" class="btn btn-danger mt-2">Delete</button>
+
+
+
+    </div>
+
+    
+
+</div>
+
+
+<script src= "https://code.jquery.com/jquery-2.2.4.min.js"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+     document.getElementById('select-all').onclick = function () {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        },
+    $(document).ready(function(){
+        $('#delete_btn').click(function(){
+            var formData = $('#algolia-doc-search').val();
+            if(confirm("Are you sure want to delete this item?")){
+                var id = [];
+                var csrf=$('input[name=csrfmiddlewaretoken]').val()
+                // $('[name="csrfmiddlewaretoken"]').val()
+                // const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                $(':checkbox:checked').each(function(i){
+                    id[i]=$(this).val();
+                })
+                if(id.length ===0){
+                    alert("Please select items to delete.")
+                }else{
+                    console.log(id);
+                    $.ajax({
+                        url:'.',
+                        method:"POST",
+                        data:{
+                            company: formData,
+                            id,
+                            // csrfmiddlewaretoken:csrftoken
+                            'csrfmiddlewaretoken': csrf,
+                        },
+                        success:function(response){
+                            for(var i=0; i<id.length;i++){
+                                $('tr#'+id[i]+'').css('background-color', '#ccc');
+                                $('tr#'+id[i]+'').fadeOut('show');
+
+                            }
+                        }
+                    })
+
+                
+                }
+
+            }
+        }) 
+    
+    })
+
+</script>
+
+
+
+      
+{% endblock content %}
+
+{% block scripts %}
+
+  
+{% endblock scripts %}
+
+

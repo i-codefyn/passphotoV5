@@ -1,0 +1,99 @@
+
+
+
+    <!-- Dashboard Counts Section-->
+    <div class="card box-lg">
+      <div class="row">
+        <div class="w-100">
+          <table
+            id="table"
+            class="table table-bordered border-secondary table-hover"
+          >
+            <thead class="alert-success">
+              <tr>
+                <!-- <th width="1%" scope="col">S.N</th> -->
+                <th width="40%" scope="col">Input</th>
+                <th width="40%" scope="col">Output</th>
+                <th width="10%" scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {% if photos %}
+                <!-- <th scope="row">{{ forloop.counter }}</th> -->
+                <td>
+                  <a
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Download"
+                >
+                  <img
+                  src="{{ photos }}"
+                  style="
+                    width: 124.8px;
+                    height: 153.6px;
+                    text-align: center;
+                    border:3px solid #111;
+
+                  "
+                />
+                </a>
+              </td>
+                <td>
+                  <img
+
+                  src="{{ photos.image.url }}"
+                  style="
+                    width: 124.8px;
+                    height: 153.6px;
+                    text-align: center;
+                    border:3px solid #111;
+                    margin-bottom: 5px !important;
+                  "
+                />
+                  <a
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="Download"
+                    class="btn btn-info"
+                     href="{{ photos.image.url }}"
+                  >
+                  <i class="bi bi-arrow-down-circle pe-1"></i>Download
+                </a>
+                  </td>
+
+
+
+                <td>
+                  <form
+                  method="POST"
+
+                >
+                  {% csrf_token %}
+                  <input name="_method" type="hidden" value="DELETE" />
+                  <button
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="Delete"
+                    class="btn btn-danger"
+                    type="submit"
+                    onclick="confirmFunction()"
+                  >
+                    <i class="bi bi-trash pe-2"></i>Delete
+                  </button>
+                </form>
+
+                </td>
+              </tr>
+             {% else %}
+              <div class="alert-danger">No data to display</div>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end -->
+
+

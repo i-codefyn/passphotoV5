@@ -1,0 +1,100 @@
+
+
+
+    <!-- Dashboard Counts Section-->
+    <div class="container">
+    <div class="py-2 my-2 form-style">
+    {% comment %}  {% endcomment %}
+    <div class="table" id="results">
+      <div class='theader'>
+        <div class='table_header'>PHOTOS</div>
+        <div class='table_header'>DOWNLOAD SINGLE PHOTOS</div>
+        <div class='table_header'>DELETE</div>
+      </div>
+      {% for photos in photos %}
+      <div class='table_row'>
+        <div class='table_small'>
+          <div class='table_cell'>Photos</div>
+          <div class='table_cell'>
+            <a
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="Download"
+            href="{{ photos.get_absolute_url }}"
+          >
+          <div>
+            <img
+            src="{{ photos.image.url }}"
+            style="
+              width: 124.8px;
+              height: 153.6px;
+              text-align: center;
+              border:3px solid #111;
+            "
+          />
+        </div>
+          </a>
+          </div>
+        </div>
+        {% comment %}  {% endcomment %}
+        <div class='table_small'>
+          <div class='table_cell'>Download</div>
+          <div class='table_cell'>
+            <div class="dropdown px-5 mx-5 my-3 py-3">
+              <a
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Download"
+              class="btn btn-success btn-lg"
+              href="{{ photos.get_absolute_url }}/download"
+              >
+            <i class="bi bi-arrow-down-circle pe-1"></i> Remove Bg & Download
+          </a>
+          </div>
+          </div>
+          </div>
+          {% comment %}  {% endcomment %}
+        
+        <div class='table_small'>
+          <div class='table_cell'>Delete</div>
+          <div class='table_cell'>
+            <div class="dropdown px-2 mx-2 my-3 py-3">
+              <form
+                method="POST"
+                action="{{ photos.get_absolute_url }}/delete"
+              >
+                {% csrf_token %}
+                <input name="_method" type="hidden" value="DELETE" />
+                <button
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Delete"
+                  class="btn btn-danger"
+                  type="submit"
+                  onclick="confirmFunction()"
+                >
+                  <i class="bi bi-trash pe-2"></i>Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% comment %}  {% endcomment %}
+      </div>
+ 
+  
+    {% endfor %} 
+    {% comment %}  {% endcomment %}
+          <!-- Copyright -->
+       
+     <!-- Copyright -->
+    </div>
+    <div class="text-center p-3">
+      Codefyn Tech Services © 2023 All Rights Reserved.
+       </div>
+    </div>
+    
+    <!-- end -->
+  
+  
+  

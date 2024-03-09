@@ -1,0 +1,46 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container  py-5 col-lg-6 mx-auto text-center">
+  <div class="form-style">
+  <div class="shadow-lg p-4  border-1 rounded-2">
+  <form method="post" class="d-block" id="uploadForm"  onsubmit="onSubmit()" enctype="multipart/form-data">
+    <h5 class="mb-4 text-muted mb-5">Drop/Upload an image below or browse files.</h5>
+    {% csrf_token %}
+    {{ form.image|as_crispy_field }}
+    <button type="submit" class="btn btn-lg btn-success mt-3">
+      <i class="bi bi-file-earmark-arrow-up me-2"></i>Upload
+      Image</button>
+  </form>
+
+  <div class="d-none" id="progress">
+    <h5 class="me-5">Image Uploading....</h5>
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:40%"></div>
+    <div class="d-flex justify-content-center mt-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Processing image...</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+{% block page_js %}
+<script>
+
+  function onSubmit() {
+    let uploadForm = document.querySelector("#uploadForm");
+    let progress = document.querySelector("#progress");
+
+    uploadForm.setAttribute("class", "d-none");
+    progress.setAttribute("class", "d-block");
+
+    uploadForm.submit();
+  }
+</script>
+{% endblock %}
+
+{% endblock %}

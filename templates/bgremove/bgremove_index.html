@@ -1,0 +1,49 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container  py-5 col-lg-3 mx-auto text-center">
+  <div class="form-style">
+  <div class="shadow-lg p-4  border-1 rounded-2 text-center">
+    <div >
+      <img class="form-image" style="width:350px; height: 300px; margin-bottom: 10px;;" id="target"/>
+      </div>
+    <form id="upload-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.image|as_crispy_field }}
+    <button type="submit" class="btn btn-lg btn-success mt-3">
+      <i class="bi bi-file-earmark-arrow-up me-2"></i>Remove Bg
+    </button>
+  </form>
+  <div class="d-none" id="progress">
+    <h5 class="me-5">Image Uploading....</h5>
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:40%"></div>
+    <div class="d-flex justify-content-center mt-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Processing image...</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+{% block page_js %}
+<script>
+  //to show the img
+  function showImage(image,target) {
+    var fr=new FileReader();
+    // when image is loaded, set the src of the image where you want to display it
+    fr.onload = function(e) { target.src= this.result; };
+    image.addEventListener("change",function() {
+      // fill fr with image data    
+      fr.readAsDataURL(image.files[0]);
+    });
+  }
+  
+  var image = document.getElementById("image");
+  var target = document.getElementById("target");
+  showImage(image,target);
+</script>
+{% endblock %}
+
+{% endblock %}

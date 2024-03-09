@@ -1,0 +1,81 @@
+version: "V4.1.5"
+
+services:
+
+  web:
+
+      build: .
+      container_name: passphoto
+      volumes: 
+      - .:/passphoto.in
+      - static:/passphoto.in/static_cdn
+      - media:/passphoto.in/media_cdn
+      depends_on: 
+          - riak
+      ports:
+      - 8200:8200
+      command: bash -c "python manage.py collectstatic --no-input && python manage.py makemigrations && python manage.py migrate && gunicorn PassPhoto.wsgi -b 0.0.0.0:8200"
+
+  riak:
+    image: kefirgames/riak:2.2.3
+    ports:
+      - "8087:8087"
+      - "8098:8098"
+    volumes:
+      - riak:/etc/riak/schemas
+    environment:
+        - RIAK_LOG_CONSOLE=file
+        - RIAK_LOG_CONSOLE_LEVEL=info
+        - RIAK_LOG_SYSLOG=off
+        - RIAK_LOG_CRASH=on
+        - RIAK_LOG_CRASH_MAXIMUM_MESSAGE_SIZE=64KB
+        - RIAK_LOG_CRASH_SIZE=10MB
+        - RIAK_LOG_CRASH_ROTATION_KEEP=5
+        - RIAK_NODENAME=riak
+        - RIAK_RING_SIZE=64
+        - RIAK_COOKIE=riak
+        - RIAK_ERLANG_ASYNC_THREADS=64a
+        - RIAK_ERLANG_MAX_PORTS=262144
+        - RIAK_DTRACE=off
+        - RIAK_DATA_DIR
+        - RIAK_LOGS_DIR=/var/log/riak
+        - RIAK_LISTENER_HTTP_INTERNAL_PORT=8098
+        - RIAK_LISTENER_PROTOBUF_INTERNAL=8087
+        - RIAK_ANTI_ENTROPY=active
+        - RIAK_STORAGE_BACKEND=leveldb
+        - RIAK_OBJECT_FORMAT=1
+        - RIAK_OBJECT_SIZE_WARNING_THRESHOLD=5MB
+        - RIAK_OBJECT_SIZE_MAXIMUM=50MB
+        - RIAK_OBJECT_SIBLINGS_WARNING_THRESHOLD=25
+        - RIAK_OBJECT_SIBLINGS_MAXIMUM=100
+        - RIAK_BITCASK_DATA_ROOT=$- RIAK_DATA_DIR/bitcask
+        - RIAK_BITCASK_IO_MODE=erlang
+        - RIAK_CONTROL=off
+        - RIAK_CONTROL_AUTH_MODE=off
+        - RIAK_LEVELDB_MAXIMUM_MEMORY_PERCENT=70
+        - RIAK_LEVELDB_COMPRESSION=on
+        - RIAK_LEVELDB_COMPRESSION_ALGORITHM=lz4
+        - RIAK_LEVELDB_WRITE_BUFFER_SIZE_MIN=30MB
+        - RIAK_LEVELDB_WRITE_BUFFER_SIZE_MAX=60MB
+        - RIAK_LEVELDB_BLOCK_SIZE=16KB
+        - RIAK_LEVELDB_BLOOMFILTER=on
+        - RIAK_LEVELDB_TIERED_LEVEL=4
+        - RIAK_LEVELDB_TIERED_PATH_FAST=$- RIAK_DATA_DIR/leveldb/fast
+        - RIAK_LEVELDB_TIERED_PATH_SLOW=$- RIAK_DATA_DIR/leveldb/slow
+        - RIAK_LEVELDB_DATA_ROOT=./
+        - RIAK_SEARCH=off
+        - RIAK_SEARCH_SOLR_START_TIMEOUT=30s
+        - RIAK_SEARCH_SOLR_PORT=8093
+        - RIAK_SEARCH_SOLR_JMX_PORT=8985
+        - RIAK_SEARCH_SOLR_JVM_OPTIONS=-d64
+    healthcheck:
+        test: ["CMD-SHELL", "riak-admin status"]
+        interval: 10s
+        timeout: 5s
+        retries: 10
+volumes:
+  riak:
+  media:
+  static:  
+
+

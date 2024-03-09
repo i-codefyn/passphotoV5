@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} Passport Size Photo | Pass Photo{% endblock %}</title>
+    {% load static %}
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}"/>
+    {% load static compress %}
+    {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/font/bootstrap-icons.css' %}"/>
+    {% endcompress %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500,600" />
+    <link href="{% static 'vendor/bootstrap-5.0.2/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/cropper/css/cropper.min.css' %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'vendor/bootstrap-5.0.2/js/bootstrap.bundle.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/sweetalert/sweetalert2.all.js' %}"></script>
+  </head>
+  <body>
+    {% block header %}
+    {% include 'includes/header.html' %}
+    {% endblock %}
+      {% block messages %}
+      {% include 'includes/messages.html' with messages=messages %}
+     {% endblock %}
+      {% block content %}
+      {% endblock %}
+    {% block footer %}
+    {% include 'includes/footer.html' %}
+    {% endblock %}
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'vendor/cropper/js/cropper.min.js' %}"></script>
+
+    <script type="text/javascript">
+    
+  $(document).ready(function() {
+    $('#upload-form').submit(function(event) {
+        event.preventDefault();
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '/bgremove/',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            
+            beforeSend: function(){
+
+            },
+            xhr:function(){
+                const xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener('progress', e=>{
+                  swal.fire({
+                    html: '<h4>Proccessing...</h4><img width="10" height="20" src="/static/images/hloader.gif" />',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    onRender: function() {
+                      $('.swal2-content').prepend(sweet_loader);
+                      Swal.showLoading();
+                    }
+                  });
+                });
+                return xhr
+            },
+            
+            success:function(response){
+              
+                  setTimeout(function() {
+                   
+                    swal.fire({
+                      icon: 'success',
+                      html: '<h4>Success!</h4>'
+                    });
+                  }, 700);
+                  
+                  var img = new Image();
+                  const link = document.createElement('a');
+                  img.src = 'data:image/png;base64,' + response;
+                  link.href = img.src;
+                  link.setAttribute('download', 'passphoto.jpg');
+                  link.click();
+               
+                
+            }
+        });
+    });
+});
+
+{% comment %}  {% endcomment %}
+
+  </script>
+    {% block javascript %}
+    {% endblock %}
+  </body>
+</html>

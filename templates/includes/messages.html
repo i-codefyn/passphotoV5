@@ -1,0 +1,53 @@
+
+<!-- massage alert -->
+<!-- <div class="row ">
+    <div class="container col-lg-6" id="message">
+      {% if messages %}
+      {% for message in messages %}
+      {% if message.tags == 'success' %}
+      <div class="mt-2 alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        <span class="text-success">{{ message }}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% else %}
+      <div class="mt-2 alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        <span class="text-danger">{{ message }}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  -->
+{% for message in messages %}
+    {% if message.tags == 'success' %}
+      <!-- sweetalert for success -->
+
+      <script>
+
+        var m = "{{ message }}";
+        swal.fire({
+        title: `{{ message.tags }}`,
+        text: "{{ message|safe }}.",
+        icon: "success",
+        buttons: true,
+        dangerMode: true,
+         })
+      </script>
+    {% else %}
+    <!-- sweetalert for error -->
+
+    <script>
+      var m = "{{ message }}";
+      Swal.fire({
+      icon: 'error',
+      title: `{{ message.tags }}`,
+      text: "{{ message|safe }}.",
+
+     })
+    </script>
+    {% endif %}
+  {% endfor %}
+
+

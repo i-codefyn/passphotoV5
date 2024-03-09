@@ -1,0 +1,59 @@
+{% extends 'layouts/_base_.html'%} {% load crispy_forms_tags %}
+{% load socialaccount %}
+{% block title%}Login | PassPhoto {% endblock title %}
+{% block content%}
+<section class="bg-white">
+  <div class="container">
+    <div class="p-4">
+        <div class="row">
+          <div class="col-md-8 text-center">
+            <img src="/static/images/login.png" />
+          </div>
+          <div class="col-md-4 bg-white rounded-5">
+            <form method="post" enctype="multipart/form-data" id="LoginForm">
+              {% csrf_token %}
+              <div class="text-center">
+                <img
+                  src="/static/images/logo.svg"
+                  class="logo-sm mb-3"
+                />
+                <h5>
+                  <span class="text-muted">Login </span
+                  ><span class="text-danger">Page</span>
+                </h5>
+              </div>
+              <div class="">{{ form|crispy }}</div>
+              <div class="mb-3 mt-2 text-center">
+                <a class="button text-muted" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+                <button class="btn btn-primary btn-lg  w-100" type="submit">
+                  <i class="bi bi-key me-3"></i> Sign in
+                </button>
+              </form>
+                <div class="justify-center">
+                  <a class=" btn btn-lg btn-danger my-3  w-100" href="{% provider_login_url 'google' %}">
+                  
+                  Sign in with google <i class="bi bi-google text-white"></i>
+                   
+                  </a>
+              </div>
+                <a class="already text-muted my-2" href="{% url 'account_signup' %}"
+                  >Free Signup here.</a
+                >
+              </div>
+     
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // FOrm Submit
+    $(document).ready(function () {
+      $(".preloader").hide();
+      $("#LoginForm").on("submit", function () {
+        $(".preloader").fadeIn();
+      }); //submit
+    });
+    // end form submit
+  </script>
+</section>
+{% endblock content %}
