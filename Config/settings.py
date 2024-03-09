@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os  # new
 from pathlib import Path
 import environ
-
+from django.conf import settings
+from django.core.management.utils import get_random_secret_key
 env = environ.Env()
 # reading .env file
 environ.Env.read_env()
@@ -27,8 +28,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(env("DEBUG", default=0))
-
-from django.core.management.utils import get_random_secret_key
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
@@ -59,7 +58,11 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_SSL = False
 
-ALLOWED_HOSTS = []
+if DEBUG:
+    ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = [env('ALLOW_HOST'),env('ALLOW_IP')]
+
 CSRF_TRUSTED_ORIGINS = [env("TRUSTED_ORIGIN")]
 
 INTERNAL_IPS = [
@@ -111,23 +114,7 @@ AUTHENTICATION_BACKENDS = (
 )
 # accounts
 from django.urls import reverse_lazy
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': '506815430395-57tjo2trk4tq5oealfcoinicj0b7oade.apps.googleusercontent.com',
-            'secret': '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',
-            'key': ''
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-            # 'redirect_uri': 'http://127.0.0.1:8000/<custom-url>'
-        }
-    }
-}
+
 ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
 LOGIN_URL = reverse_lazy("account_login")
 LOGOUT_REDIRECT_URL = reverse_lazy("login_view")
@@ -167,7 +154,24 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
-
+# django-allauth config
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': env('CLIENT_ID'),
+            'secret': env('SECRET_KEY'),
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+            # 'redirect_uri': 'http://127.0.0.1:8000/<custom-url>',
+        }
+    }
+}
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -215,11 +219,9 @@ STATICFILES_DIRS = [
 ]  # new
 # STATIC_ROOT = "staticfiles/"
 MEDIA_URL = '/media/'
-
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles/")  # new
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-from django.conf import settings
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 CLOUDINARY_STORAGE = {
