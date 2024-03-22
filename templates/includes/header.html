@@ -24,8 +24,10 @@
            <div class="main-menu ">
               <ul class="nav">
                  <li><a class="nav" href="{% url 'photo:index' %}"> Home </a> </li>
-                 <li><a  class="nav" href="{% url 'bgremove:index' %}">Remove Background </a></li>
-                 <li><a  class="nav" href="{% url 'photo:pass_photo' %}">Passport Photo</a></li>
+                 <!-- <li><a  class="nav" href="{% url 'bgremove:index' %}">Remove Background </a></li> -->
+                 <li><a  class="nav" href="{% url 'photoapp:bg_remove' %}">Bg Remove </a></li>
+                 <li><a  class="nav" href="{% url 'photoapp:home' %}">Passport Photo</a></li>
+                 <li><a  class="nav me-3" href="{% url 'photo:pass_photo' %}">Services<span class="premium-badge ms-1">Premium</span></a></li>
                  </ul>
               <ul class="main-menu text-center">
                 
@@ -73,8 +75,9 @@
                         {% else %}
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                           <li class="nav-item">
+                           
                             <a
-                              class="w-100 btn blue"
+                              class="w-100 btn-hover color-1 mt-2"
                               href="{% url 'account_login'%}"
                             >
                             <i class="bi bi-person-lock me-2"></i>Login</a

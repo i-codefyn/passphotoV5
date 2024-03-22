@@ -1,0 +1,231 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<div class="body-content">
+<div class="container text-center my-5">
+    <form id="upload-form" enctype="multipart/form-data">
+    {% csrf_token %} 
+        <input type="file" id="file-input" name="files[]" multiple>
+    </form>
+    <div id="drop-area">
+        <div class="icon">+</div>
+        <div class="text">Drag & Drop Images Here<br>or click to select</div>
+    </div>
+    <div id="image-preview"></div>
+    <div class="spinner-container">
+        <div class="spinner"></div>
+    </div>
+    <div class="overlay"></div>
+    <div class="progress my-2" style="display:none;">
+        <div class="progress-bar"></div>
+    </div>
+    <div id="error-message" class="error-message my-2" style="display:none;"></div>
+
+    <div class="btn-group my-2" role="group">
+        <select id="bg-color" class="form-select" style="display:none;">
+            <option value="nochange" selected>Select Bg Color</option>
+            <option value="white">White</option>
+        </select>
+        <button id="upload-button" style="display:none;">Submit</button>
+      </div>
+</div>
+</div>
+
+<script>
+         $(document).ready(function() {
+        // Function to get CSRF cookie value
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+            // Handle manual image selection
+            $('#select-button').on('click', function() {
+                $('#file-input').click();
+            });
+
+             // input file handle
+            $('#file-input').on('change', function(e) {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    $('#bg-color').show(); // Show the background color selection dropdown
+                } else {
+                    $('#bg-color').hide(); // Hide the dropdown if no files are selected
+                }
+                if (files.length === 0) {
+                    $('#error-message').text('Please select at least one file.');
+                    $('#error-message').show();
+                } else if (files.length > 7) {
+                    $('#error-message').text('You can upload a maximum of 7 files.');
+                    $('#error-message').show();
+                } else {
+                    $('#error-message').hide();
+                    handleFiles(files);
+                }
+            });
+            // Handle drag and drop
+            var dropArea = $("#drop-area");
+            dropArea.on('dragenter', function(e) {
+                e.preventDefault();
+                dropArea.addClass('hover');
+            });
+            dropArea.on('dragover', function(e) {
+                e.preventDefault();
+            });
+            dropArea.on('dragleave', function() {
+                dropArea.removeClass('hover');
+            });
+            dropArea.on('drop', function(e) {
+                e.preventDefault();
+                dropArea.removeClass('hover');
+                var files = e.originalEvent.dataTransfer.files;
+                if (files.length > 7) {
+                    $('#error-message').text('You can upload a maximum of 7 files.');
+                    $('#error-message').show();
+                    return;
+                }
+                if (files.length > 0) {
+                    $('#bg-color').show(); // Show the background color selection dropdown
+                    $('#upload-button').show(); // Show the submit button
+                } else {
+                    $('#bg-color').hide(); // Hide the dropdown if no files are selected
+                    $('#upload-button').hide(); // Hide the submit button if no files are selected
+                }
+                $('#file-input')[0].files = files; // Update file input's files
+                handleFiles(files);
+            });
+
+            // Combine select button and drag and drop
+            $('#drop-area').on('click', function() {
+                $('#file-input').click();
+            });
+                    // Handle remove button click
+            $('#image-preview').on('click', '.remove-button', function() {
+            $(this).closest('.image-item').remove(); // Remove the parent image item
+                if ($('#image-preview').children('.image-item').length === 0) {
+                    $('#upload-button').hide(); // Hide the submit button if no images are left
+                    $('#bg-color').hide(); // Hide the submit button if no images are left
+                }
+            });
+
+
+            // Function to handle selected files
+            function handleFiles(files) {
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    if (file.type.match('image.*')) {
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            var imageItem = '<div class="image-item">' +
+                                                '<img src="' + e.target.result + '" alt="Preview Image">' +
+                                                '<button type="button" class="remove-button">&times;</button>' + // Remove button
+                                                // '<select class="bg-color">' +
+                                                //     '<option value="red">Red</option>' +
+                                                //     '<option value="green">Green</option>' +
+                                                //     '<option value="blue">Blue</option>' +
+                                                //     '<option value="yellow">Yellow</option>' +
+                                                //     '<option value="orange">Orange</option>' +
+                                                //     '<option value="purple">Purple</option>' +
+                                                // '</select>' +
+                                            '</div>';
+                            $('#image-preview').append(imageItem);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+                $('#upload-button').show();
+            }
+
+            // Handle image title input
+            $(document).on('input', '.image-title', function() {
+                var title = $(this).val();
+                var imageItem = $(this).closest('.image-item');
+                imageItem.attr('data-title', title);
+            });
+
+       
+            // Handle upload button click
+            $('#upload-button').on('click', function() {
+                $('.spinner-container').show(); // Show spinner container when upload button clicked
+                $('.overlay').show(); // Show overlay to disable interactions
+                var formData = new FormData();
+                var files = $('#file-input')[0].files;
+                var bgColor = $('#bg-color').val(); // Get selected background color
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    formData.append('files[]', file);
+                    formData.append('bg_color', bgColor); // Append the background color once
+                }
+
+
+                $.ajax({
+                   
+                    url: '.',
+                    method: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data:formData,
+                    beforeSend: function(xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                },
+               
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener('progress', function(e) {
+                            if (e.lengthComputable) {
+                                var percentComplete = (e.loaded / e.total) * 100;
+                                $('.progress-bar').css('width', percentComplete + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(response) {
+                        setTimeout(function() {
+                              swal.fire({
+                                icon: 'success',
+                                html: '<h4>Success!</h4>'
+                              });
+                            }, 700);
+                        
+                        var img = new Image();
+                        const link = document.createElement('a');
+                        img.src = 'data:image/jpg;base64,' + response.output;
+                        link.href = img.src;
+                        link.setAttribute('download', 'passphoto.jpg');
+                        link.click();
+                        $('.progress-bar').css('width', '0%');
+                        $('#image-preview').empty();
+                        $('#file-input').val('');
+                        $('#upload-button').hide();
+                      
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                        alert('Upload failed!');
+                    }
+                });
+                $('.progress').show();
+            });
+                           // Hide spinner after upload process is completed
+            $(document).ajaxStop(function() {
+                $('.spinner-container').hide(); // Show spinner container when upload button clicked
+                $('.overlay').hide(); // Show overlay to disable interactions
+                $('.progress').hide(); // Show overlay to disable interactions
+                $('#bg-color').hide();
+            });
+        });
+</script>
+
+{% endblock %}
+

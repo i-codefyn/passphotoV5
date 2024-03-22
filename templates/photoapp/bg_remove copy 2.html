@@ -1,0 +1,407 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+    <script>
+    $(document).ready(function(){
+    var dropArea = $('#uploadForm');
+    var dragArea = $('#dragArea');
+    var loader = $('#loader');
+    var progressBar = $('#progressBar');
+    var progress = $('.progress');
+    var outputImage = $('#outputImage');
+    var imagePreview = $('#imagePreview');
+    var removeButton = $('#removeButton');
+    var submitButton = $('#submitButton');
+    var downloadButton = $('#downloadButton');
+    var ReloadButton = $('#ReloadButton');
+    var sppiner = $('.spinner-container');
+    var overlay= $('.overlay');
+
+    // Initially hide submit and remove buttons
+    removeButton.hide();
+    submitButton.hide();
+    downloadButton.hide();
+    ReloadButton.hide();
+    progress.hide(); // Show overlay to disable interactions
+
+      dropArea.on('dragenter', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).addClass('dragover');
+       });
+
+       dropArea.on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+           });
+
+        dropArea.on('dragleave', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).removeClass('dragover');
+         });
+
+        dropArea.on('drop', function (e) {
+        $(this).removeClass('dragover');
+        e.preventDefault();
+        var files = e.originalEvent.dataTransfer.files;
+        handleFiles(files);
+        });
+
+        $('#imageInput').change(function(){
+        handleFiles(this.files);
+          });
+
+        function handleFiles(files) {
+        if(files.length > 0) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.attr('src', e.target.result).show();
+                dropArea.hide();
+                dragArea.hide();
+                removeButton.show();
+                submitButton.show();
+            }
+            reader.readAsDataURL(files[0]);
+            }
+            }
+
+             removeButton.on('click', function() {
+              imagePreview.attr('src', '').hide();
+              dropArea.show();
+              dragArea.show();
+              removeButton.hide();
+              submitButton.hide();
+              downloadButton.hide();
+              ReloadButton.hide();
+             
+              });
+              ReloadButton.on('click', function() {
+              imagePreview.attr('src', '').hide();
+              dropArea.show();
+              dragArea.show();
+              removeButton.hide();
+              submitButton.hide();
+              downloadButton.hide();
+              ReloadButton.hide();
+              outputImage.hide();
+             
+              });
+
+            submitButton.on('click', function() {
+            $('#uploadForm').submit();
+            });
+
+
+            $('#uploadForm').submit(function(event){
+                event.preventDefault();
+                var formData = new FormData($(this)[0]);
+                progress.show(); 
+                progressBar.css('width', '0%').text('0%'); // Reset progress bar
+                sppiner.show(); // Show spinner container when upload button clicked
+                overlay.show(); // Show overlay to disable interactions
+
+                $.ajax({
+                    type: 'POST',
+                    url: '.',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        // Upload progress
+                        xhr.upload.addEventListener("progress", function(evt){
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                percentComplete = parseInt(percentComplete * 100);
+                                progressBar.css('width', percentComplete + '%').text(percentComplete + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(response){
+                        
+                        outputImage.attr('src', 'data:image/png;base64,' + response.image);
+                        sppiner.hide(); 
+                        overlay.hide(); // Show overlay to disable interactions
+                        removeButton.hide();
+                        submitButton.hide();
+                        downloadButton.show(); // Show the download button
+                        ReloadButton.show(); // Show the download button
+                        imagePreview.fadeOut('slow', function(){
+                        outputImage.fadeIn('slow');
+                          });
+
+                        downloadButton.on('click', function() {
+                        var img = new Image();
+                        const link = document.createElement('a');
+                        img.src = 'data:image/jpg;base64,' + response.image;
+                        link.href = img.src;
+                        link.setAttribute('download', 'passphoto.jpg');
+                        link.click();
+                         });
+                      
+                        
+                        },
+                    error: function(xhr, errmsg, err){
+                        console.log(xhr.status + ': ' + xhr.responseText);
+                    },
+                    complete: function(){
+                   
+                sppiner.hide(); // Show spinner container when upload button clicked
+                overlay.hide(); // Show overlay to disable interactions
+                progress.hide(); 
+                progressBar.hide(); // Show overlay to disable interactions
+                removeButton.hide();
+                submitButton.hide();
+           
+              
+              
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+
+
+.spinner-container {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+
+/* Progress bar container */
+.progress {
+    width: 100%;
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* Progress bar */
+.progress-bar {
+    height: 100%;
+    background-color: green;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* Progress bar text */
+.progress-text {
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.image-container {
+    position: relative;
+    overflow: hidden;
+      
+    }
+
+    .image-container img {
+        padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: 300px; /* Specify height */
+  width: 600px; /* Specify width */
+  border: 2px solid #333; /* Add border */
+      width: 100%;
+      height: auto;
+    }
+
+    .button-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .button-container button {
+      color: white;
+    }
+
+ .centered-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: 300px; /* Specify height */
+  width: 600px; /* Specify width */
+  border: 2px solid #333; /* Add border */
+}
+
+.content {
+  text-align: center;
+}
+
+.input-container {
+ margin: 50px auto;
+ padding: 20px;
+ background-color: #fff;
+ border-radius: 10px;
+ box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.drag-drop-container {
+
+ 
+ border-radius: 5px;
+ padding: 20px;
+ text-align: center;
+ background-color: #f9f9f9;
+ text-align: center;
+ cursor: pointer;
+ border: 5px solid;
+ border-radius: 10px;
+border-image: linear-gradient(45deg, gold, deeppink) 1;
+clip-path: inset(0px round 10px);
+animation: huerotate 6s infinite linear;
+filter: hue-rotate(360deg);
+}
+
+
+@keyframes huerotate {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+    100% {
+        filter: hue-rorate(360deg);
+    }
+}
+
+.drag-drop-text {
+ font-size: 20px;
+ color: #333;
+ text-align: center;
+ cursor: pointer;
+ padding: 20px;
+ margin-top: 50px;
+}
+
+
+.upload-label {
+    
+   height: 300px;
+   padding: 20px;
+   background-color: #f0f0f0;
+   border-radius: 10px;
+   transition: background-color 0.3s, color 0.3s;
+   margin: 0 auto; /* Center horizontally */
+   display: flex; /* Use flexbox for centering vertically */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.upload-label:hover {
+   background-color: #e0e0e0;
+   color: #555;
+}
+.fa-plus {
+ font-size: 40px; /* Adjust the size as needed */
+  color: transparent; /* Set icon color to transparent */
+  background: linear-gradient(45deg, #ff7300, #fe5f75); /* Gradient background */
+  -webkit-background-clip: text; /* Apply gradient as text color */
+  background-clip: text; /* Apply gradient as text color */
+  margin: 0 auto; /* Center horizontally */
+  display: flex; /* Use flexbox for centering vertically */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+</style>
+
+<div class="container mt-5">
+    <div class="body-content">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+           <!-- dragdrop -->
+           <div id="dragArea" class="input-container">
+            <div class="drag-drop-container">
+            <form id="uploadForm" enctype="multipart/form-data" >
+                {% csrf_token %}
+                <input type="file" id="imageInput" name="image" multiple style="display: none;">
+                <label for="imageInput" class="upload-label">
+                <span class="drag-drop-text">
+                <i class="bi bi-file-earmark-plus-fill fa-plus mb-3"></i>
+                Drag and drop your images here or click to select  images.</span>
+                </label>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+ <!--  -->
+    <div class="row">
+      <div class="col-md-4 mx-auto">
+        <!-- image container -->
+        <div class="image-container">
+            <img id="imagePreview" src="#" alt="Image Preview" style=" display: none;">
+            <img   id="outputImage" src="" alt="Processed Image" style=" display: none;">
+               <!-- button-->        
+          <div class="button-container">
+            <button id="removeButton" class="btn btn-danger btn-lg">Reset</button>
+            <button type="submit" id="submitButton" class="btn btn-primary btn-lg"> Remove Background</button>
+            <button id="ReloadButton" class="btn btn-warning btn-lg">Upload</button>
+            <button id="downloadButton"class="btn btn-success btn-lg">Download Image</button>
+          </div>
+        </div>
+             <!-- Progress bar -->
+             <div class="progress">
+                <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+                <div id="progressText" class="progress-text">0%</div>
+            </div>
+             <!-- overlay -->
+             <div class="spinner-container">
+                <div class="spinner"></div>
+            </div>
+            <div class="overlay"></div>
+            <!-- sppiner -->
+      </div>
+      <!-- img container -->
+    </div>
+    </div>
+  </div>
+</div>
+  
+{% endblock %}
+

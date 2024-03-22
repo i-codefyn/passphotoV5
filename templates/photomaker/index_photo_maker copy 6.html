@@ -10,7 +10,7 @@
   </style>
  <!-- Img Upload-->
 
-
+ <div  class="container my-5 col-lg-6 col-md-6 ">
 <!--  -->
 <div class="container mt-5">
   <div class="body-content">
@@ -33,37 +33,31 @@
       </div>
   </div>
 </div>
-
-<!--  -->
-<div class="btn-group not-visible w-100" id="edit-btn" role="group">
-  <button type="button" class="btn btn-primary js-zoom-in">
-    <i class="bi bi-zoom-in"></i>
-  </button>
-  <button type="button" class="btn btn-secondary js-zoom-out">
-    <i class="bi bi-zoom-out"></i>
-  </button>
-  <button type="button" class="btn btn-warning js-rotes">
-    <i class="bi bi-arrow-clockwise"></i>
-  </button>
-  <button type="button" class="btn btn-danger js-rotes-anti">
-    <i class="bi bi-arrow-counterclockwise"></i>
-  </button>
-<button class="btn  btn-success not-visible" id="confirm-btn"  onclick="loading()" type="submit">
-  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"style="display:none;" >
-  </span> Crop & Upload for Proccess
-</button>
 </div>
 <!--  -->
-</div>
-</div>
-</div>
-</div>
-</div>
 
-<!--  -->
-
-  
-   
+  <!--  -->
+      <div class="btn-group not-visible " id="edit-btn" role="group">
+        <button type="button" class="btn btn-primary js-zoom-in">
+          <i class="bi bi-zoom-in"></i>
+        </button>
+        <button type="button" class="btn btn-secondary js-zoom-out">
+          <i class="bi bi-zoom-out"></i>
+        </button>
+        <button type="button" class="btn btn-warning js-rotes">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <button type="button" class="btn btn-danger js-rotes-anti">
+          <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+      <button class="btn  btn-success not-visible" id="confirm-btn"  onclick="loading()" type="submit">
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"style="display:none;" >
+        </span> Crop & Upload 
+      </button>
+    </div>
+    </div>
+    </div>
+  </div>
 
 
 <script type="text/javascript">
@@ -74,38 +68,16 @@ const confirmBtn = document.getElementById('confirm-btn')
 const editBtn = document.getElementById('edit-btn')
 const input = document.getElementById('id_file')
 const csrf = document.getElementsByName('csrfmiddlewaretoken')
-const dropArea = document.getElementById('dragArea');
-
-dropArea.addEventListener('dragover', (event) => {
-  event.preventDefault();
-  dropArea.classList.add('dragover');
-});
-
-dropArea.addEventListener('dragleave', () => {
-  dropArea.classList.remove('dragover');
-});
-
-dropArea.addEventListener('drop', (event) => {
-  event.preventDefault();
-  dropArea.classList.remove('dragover');
-  const files = event.dataTransfer.files;
-  handleFiles(files);
-});
-
-input.addEventListener('change', (event) => {
-  handleFiles(event.target.files);
-});
-
-
-function handleFiles(files) {
-    if (files.length > 0) {
-      confirmBtn.classList.remove('not-visible')
-      editBtn.classList.remove('not-visible')
-      const imgData = files[0];
-      const url = URL.createObjectURL(imgData);
-      imageBox.innerHTML = `<img src="${url}" id="image" width="500" height="500">`;
-      const $image = $('#image');
-
+input.addEventListener('change', () => {
+    alertBox.innerHTML = ""
+    confirmBtn.classList.remove('not-visible')
+    editBtn.classList.remove('not-visible')
+    const img_data = input.files[0]
+    const url = URL.createObjectURL(img_data)
+    imageBox.innerHTML = `<img src="${url}" id="image" width="500" height="500">`
+    var $image = $('#image')
+    console.log($image)
+   
     $image.cropper({
       
       aspectRatio: 3 / 4,
@@ -132,40 +104,23 @@ function handleFiles(files) {
     $(".js-rotes-anti").click(function () {
       $image.cropper('rotate',-15);
     });
-  
-      $(".js-zoom-in").click(function () {
-        $image.cropper("zoom", 0.1);
-      });
 
-      $(".js-zoom-out").click(function () {
-        $image.cropper("zoom", -0.1);
-      });
-
-      $(".js-rotes").click(function () {
-        $image.cropper('rotate', 15);
-      });
-
-      $(".js-rotes-anti").click(function () {
-        $image.cropper('rotate', -15);
-      });
-
-      const cropper = $image.data('cropper');
-
-      confirmBtn.addEventListener('click', () => {
+    var cropper = $image.data('cropper');
+    confirmBtn.addEventListener('click', () => {
         cropper.getCroppedCanvas().toBlob((blob) => {
-          const fd = new FormData();
-          fd.append('csrfmiddlewaretoken', csrf[0].value);
-          fd.append('file', blob, 'passphoto.png');
+            console.log('confirmed')
+            const fd = new FormData();
+            fd.append('csrfmiddlewaretoken', csrf[0].value)
+            fd.append('file', blob, 'passphoto.png');
+            $.ajax({
+                type: 'POST',
+                url: imageForm.action,
+                enctype: 'multipart/form-data',
+                data: fd,
+                beforeSend: function(){
 
-          $.ajax({
-            type: 'POST',
-            url: imageForm.action,
-            enctype: 'multipart/form-data',
-            data: fd,
-            beforeSend: function () {
-              // Before send action
-            },
-            xhr:function(){
+                },
+                xhr:function(){
                     const xhr = new window.XMLHttpRequest();
                     xhr.upload.addEventListener('progress', e=>{
                       swal.fire({
@@ -206,25 +161,37 @@ function handleFiles(files) {
                 cache: false,
                 contentType: false,
                 processData: false,
-        });
-        });
-      });
-    }
-  }
+            })
+        })
+    })
+})
 
-  // Other functions
 
-  // Form Submit
+
+  // FOrm Submit
   function loading() {
     $(".btn .spinner-border-sm").show();
     $(".btn .btn-text").html("Loading");
+    
   }
-
   function Stoploading() {
     $(".btn .spinner-border-sm").hide();
     $(".btn .btn-text").html("Loading");
+    
   }
+  // end form submit
 
+
+{% comment %}  {% endcomment %}
+function onSubmit() {
+  let uploadForm = document.querySelector("#image-form");
+  let progress = document.querySelector("#progress");
+
+  uploadForm.setAttribute("class", "d-none");
+  progress.setAttribute("class", "d-block");
+
+  uploadForm.submit();
+}
 </script>
 
 {% endblock %}

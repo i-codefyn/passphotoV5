@@ -1,0 +1,222 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="body-content">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+           <!-- dragdrop -->
+           <div id="dragArea" class="input-container">
+            <div class="drag-drop-container">
+            <form id="uploadForm" enctype="multipart/form-data" >
+                {% csrf_token %}
+                <input type="file" id="imageInput" name="image" multiple style="display: none;">
+                <label for="imageInput" class="upload-label">
+                <span class="drag-drop-text">
+                <i class="bi bi-file-earmark-plus-fill fa-plus mb-3"></i>
+                Drag and drop your images here or click to select  images.</span>
+                </label>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+ <!--  -->
+    <div class="row">
+      <div class="col-md-4 mx-auto">
+        <!-- image container -->
+        <div class="image-container">
+            <img id="imagePreview" src="#" alt="Image Preview" style=" display: none;">
+            <img   id="outputImage" src="" alt="Processed Image" style=" display: none;">
+               <!-- button-->        
+          <div class="button-container">
+            <button id="removeButton" class="btn btn-danger btn-lg">Reset</button>
+            <button type="submit" id="submitButton" class="btn btn-primary btn-lg"> Remove Background</button>
+            <button id="ReloadButton" class="btn btn-warning btn-lg">Upload</button>
+            <button id="downloadButton"class="btn btn-success btn-lg">Download Image</button>
+          </div>
+        </div>
+             <!-- Progress bar -->
+             <div class="progress">
+                <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+         
+            </div>
+             <!-- overlay -->
+             <div class="spinner-container">
+                <div class="spinner"></div>
+            </div>
+            <div class="overlay"></div>
+            <!-- sppiner -->
+      </div>
+      <!-- img container -->
+    </div>
+    </div>
+  </div>
+</div>
+  
+<script>
+    $(document).ready(function(){
+    var dropArea = $('#uploadForm');
+    var dragArea = $('#dragArea');
+    var loader = $('#loader');
+    var progressBar = $('#progressBar');
+    var progress = $('.progress');
+    var outputImage = $('#outputImage');
+    var imagePreview = $('#imagePreview');
+    var removeButton = $('#removeButton');
+    var submitButton = $('#submitButton');
+    var downloadButton = $('#downloadButton');
+    var ReloadButton = $('#ReloadButton');
+    var sppiner = $('.spinner-container');
+    var overlay= $('.overlay');
+
+    // Initially hide submit and remove buttons
+    removeButton.hide();
+    submitButton.hide();
+    downloadButton.hide();
+    ReloadButton.hide();
+    progress.hide(); // Show overlay to disable interactions
+
+      dropArea.on('dragenter', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).addClass('dragover');
+       });
+
+       dropArea.on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+           });
+
+        dropArea.on('dragleave', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).removeClass('dragover');
+         });
+
+        dropArea.on('drop', function (e) {
+        $(this).removeClass('dragover');
+        e.preventDefault();
+        var files = e.originalEvent.dataTransfer.files;
+        handleFiles(files);
+        });
+
+        $('#imageInput').change(function(){
+        handleFiles(this.files);
+          });
+
+        function handleFiles(files) {
+        if(files.length > 0) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.attr('src', e.target.result).show();
+                dropArea.hide();
+                dragArea.hide();
+                removeButton.show();
+                submitButton.show();
+            }
+            reader.readAsDataURL(files[0]);
+            }
+            }
+
+             removeButton.on('click', function() {
+              imagePreview.attr('src', '').hide();
+              dropArea.show();
+              dragArea.show();
+              removeButton.hide();
+              submitButton.hide();
+              downloadButton.hide();
+              ReloadButton.hide();
+             
+              });
+              ReloadButton.on('click', function() {
+              imagePreview.attr('src', '').hide();
+              dropArea.show();
+              dragArea.show();
+              removeButton.hide();
+              submitButton.hide();
+              downloadButton.hide();
+              ReloadButton.hide();
+              outputImage.hide();
+             
+              });
+
+            submitButton.on('click', function() {
+            $('#uploadForm').submit();
+            });
+
+
+            $('#uploadForm').submit(function(event){
+                event.preventDefault();
+                var formData = new FormData($(this)[0]);
+                progress.show(); 
+                progressBar.css('width', '0%').text('0%'); // Reset progress bar
+                sppiner.show(); // Show spinner container when upload button clicked
+                overlay.show(); // Show overlay to disable interactions
+
+                $.ajax({
+                    type: 'POST',
+                    url: '.',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        // Upload progress
+                        xhr.upload.addEventListener("progress", function(evt){
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                percentComplete = parseInt(percentComplete * 100);
+                                progressBar.css('width', percentComplete + '%').text(percentComplete + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(response){
+                        
+                        outputImage.attr('src', 'data:image/png;base64,' + response.image);
+                        sppiner.hide(); 
+                        overlay.hide(); // Show overlay to disable interactions
+                        removeButton.hide();
+                        submitButton.hide();
+                        downloadButton.show(); // Show the download button
+                        ReloadButton.show(); // Show the download button
+                        imagePreview.fadeOut('slow', function(){
+                        outputImage.fadeIn('slow');
+                          });
+
+                        downloadButton.on('click', function() {
+                        var img = new Image();
+                        const link = document.createElement('a');
+                        img.src = 'data:image/jpg;base64,' + response.image;
+                        link.href = img.src;
+                        link.setAttribute('download', 'passphoto.jpg');
+                        link.click();
+                         });
+                      
+                        
+                        },
+                        error: function(xhr, errmsg, err){
+                        console.log(xhr.status + ': ' + xhr.responseText);
+                        },
+                        complete: function(){
+                   
+                        sppiner.hide(); // Show spinner container when upload button clicked
+                        overlay.hide(); // Show overlay to disable interactions
+                        progress.hide(); 
+                        progressBar.hide(); // Show overlay to disable interactions
+                        removeButton.hide();
+                        submitButton.hide();
+           
+              
+              
+                    }
+                });
+            });
+        });
+    </script>
+
+
+{% endblock %}
+

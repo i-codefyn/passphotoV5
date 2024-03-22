@@ -22,7 +22,6 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -58,10 +57,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_SSL = False
 
-if DEBUG:
-    ALLOWED_HOSTS = []
 
-ALLOWED_HOSTS = [env('ALLOW_HOST'),env('ALLOW_IP')]
+
+ALLOWED_HOSTS = []
 
 CSRF_TRUSTED_ORIGINS = [env("TRUSTED_ORIGIN")]
 
@@ -90,9 +88,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
- 'cloudinary_storage',
+    'cloudinary_storage',
     'cloudinary',
-
+    "photoapp",
     "photomaker",
     "bgremove",
     "crispy_forms",
@@ -107,11 +105,29 @@ INSTALLED_APPS = [
 # django-allauth config
 
 SITE_ID = 1  # new
+# accounts end
 AUTHENTICATION_BACKENDS = (
-    "allauth.account.auth_backends.AuthenticationBackend",
-    "django.contrib.auth.backends.ModelBackend",
-   
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
+# django-allauth config
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': env('CLIENT_ID'),
+            'secret': env('SECRET_KEY'),
+            'key': '',
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+            # 'redirect_uri': 'http://127.0.0.1:8000/<custom-url>',
+        }
+    }
+}
 # accounts
 from django.urls import reverse_lazy
 
@@ -149,29 +165,7 @@ from datetime import timedelta
 #     "MESSAGE": "The session has expired. Please login again to continue.",
 #     "REDIRECT_TO_LOGIN_IMMEDIATELY": True,
 # }
-# accounts end
-AUTHENTICATION_BACKENDS = (
-    'allauth.account.auth_backends.AuthenticationBackend',
-    'django.contrib.auth.backends.ModelBackend',
-)
-# django-allauth config
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': env('CLIENT_ID'),
-            'secret': env('SECRET_KEY'),
-            'key': ''
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-            # 'redirect_uri': 'http://127.0.0.1:8000/<custom-url>',
-        }
-    }
-}
+
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -185,8 +179,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
+
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+       # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'Config.urls'

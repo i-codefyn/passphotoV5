@@ -24,6 +24,7 @@ from photomaker import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("photomaker.urls")),
+    path("photoapp/", include("photoapp.urls")),
     path("bgremove/", include("bgremove.urls")),
     # User management
     path("accounts/", include("allauth.urls")),  # new

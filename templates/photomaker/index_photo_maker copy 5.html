@@ -19,23 +19,20 @@
  <!-- Img Upload-->
  <main >
  <div  class="container my-5 col-lg-6 col-md-6 ">
-  <div class="text-center form-style ">
+  <div class="text-center form-style">
       <div id="alert-box"></div>
       <div id="image-box" class="mb-3">
         <div class="upload-form-wrapper">
           <div class="upload-form-container">
-            <h1>Upload a Image</h1>
+            <h1>Upload Image</h1>
             <div class="upload-container">
               <div class="border-container">
-                <div class="icons">
-                  <i style="font-size:50px;" class="bi bi-image-fill" data-fa-transform="shrink-3 down-2 left-6 rotate--45"></i>
-                </div>
+               
                 <form action="" id="image-form">
                   {% csrf_token %}
                   {{ form|crispy }}
                 </form>
-                <p>Drag and drop files here, or 
-                  <a href="#" id="file-browser">browse</a> your computer.</p>
+                
               </div>
             </div>
           </div>
@@ -66,7 +63,7 @@
 </main>
 
 
-<script>
+<script type="text/javascript">
 const alertBox = document.getElementById('alert-box')
 const imageBox = document.getElementById('image-box')
 const imageForm = document.getElementById('image-form')
@@ -80,7 +77,6 @@ input.addEventListener('change', () => {
     editBtn.classList.remove('not-visible')
     const img_data = input.files[0]
     const url = URL.createObjectURL(img_data)
-
     imageBox.innerHTML = `<img src="${url}" id="image" width="500" height="500">`
     var $image = $('#image')
     console.log($image)
@@ -124,10 +120,30 @@ input.addEventListener('change', () => {
                 url: imageForm.action,
                 enctype: 'multipart/form-data',
                 data: fd,
+                beforeSend: function(){
+
+                },
+                xhr:function(){
+                    const xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', e=>{
+                      swal.fire({
+                        html: '<h4>Proccessing...</h4><img width="100" height="30" src="/static/images/loader.gif" />',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        onRender: function() {
+                          $('.swal2-content').prepend(sweet_loader);
+                          Swal.showLoading();
+                        }
+                      });
+                    });
+                    return xhr
+                },
+                
                 success: function (response) {
                     console.log('success', response)
+                    Stoploading()
                     swal.fire({
-                      title: 'Image Successfully Uploaded!',
+                      title: 'Successfully Uploaded!',
                       text: 'Do you want to go to the Download page?',
                       icon: 'success',
                       type: "success"
@@ -161,23 +177,14 @@ input.addEventListener('change', () => {
     $(".btn .btn-text").html("Loading");
     
   }
+  function Stoploading() {
+    $(".btn .spinner-border-sm").hide();
+    $(".btn .btn-text").html("Loading");
+    
+  }
   // end form submit
 
 
-  $(".js-zoom-in").click(function () {
-    $image.cropper("zoom", 0.1);
-  });
-
-  $(".js-zoom-out").click(function () {
-    $image.cropper("zoom", -0.1);
-  });
-  $(".js-rotes").click(function () {
-    $image.cropper('rotate',15);
-  });
-  $(".js-rotes-anti").click(function () {
-    $image.cropper('rotate',-15);
-  });
-{% comment %}  {% endcomment %}
 function onSubmit() {
   let uploadForm = document.querySelector("#image-form");
   let progress = document.querySelector("#progress");

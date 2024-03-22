@@ -179,6 +179,7 @@ class PhotosCreateView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
    
 
     def form_invalid(self, form):
+        messages.error(self.request, "Invalid")
         return render(
             self.request,
             self.template_name,

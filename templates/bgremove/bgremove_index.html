@@ -4,8 +4,8 @@
 <div class="container  py-5 col-lg-3 mx-auto text-center">
   <div class="form-style">
   <div class="shadow-lg p-4  border-1 rounded-2 text-center">
-    <div >
-      <img class="form-image" style="width:350px; height: 300px; margin-bottom: 10px;;" id="target"/>
+    <div class="">
+      <img class="form-image"  id="target"/>
       </div>
     <form id="upload-form" method="post" enctype="multipart/form-data">
       {% csrf_token %}
@@ -28,7 +28,63 @@
 </div>
 
 {% block page_js %}
-<script>
+{% load static %}
+<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#upload-form').submit(function(event) {
+      event.preventDefault();
+
+      var formData = new FormData(this);
+
+      $.ajax({
+          url: '/bgremove/',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          
+          beforeSend: function(){
+
+          },
+          xhr:function(){
+              const xhr = new window.XMLHttpRequest();
+              xhr.upload.addEventListener('progress', e=>{
+                swal.fire({
+                  html: '<h4>Proccessing...</h4><img width="100" height="30" src="/static/images/loader.gif" />',
+                  showCancelButton: false,
+                  showConfirmButton: false,
+                  onRender: function() {
+                    $('.swal2-content').prepend(sweet_loader);
+                    Swal.showLoading();
+                  }
+                });
+              });
+              return xhr
+          },
+          
+          success:function(response){
+            
+                setTimeout(function() {
+                 
+                  swal.fire({
+                    icon: 'success',
+                    html: '<h4>Success!</h4>'
+                  });
+                }, 700);
+                
+                var img = new Image();
+                const link = document.createElement('a');
+                img.src = 'data:image/png;base64,' + response;
+                link.href = img.src;
+                link.setAttribute('download', 'passphoto.jpg');
+                link.click();
+             
+              
+          }
+      });
+  });
+});
   //to show the img
   function showImage(image,target) {
     var fr=new FileReader();
@@ -36,7 +92,7 @@
     fr.onload = function(e) { target.src= this.result; };
     image.addEventListener("change",function() {
       // fill fr with image data    
-      fr.readAsDataURL(image.files[0]);
+    fr.readAsDataURL(image.files[0]);
     });
   }
   
