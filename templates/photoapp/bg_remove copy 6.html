@@ -11,7 +11,7 @@
             <div class="drag-drop-container">
             <form id="uploadForm" enctype="multipart/form-data" >
                 {% csrf_token %}
-                <input type="file" id="imageInput" name="files" style="display: none;">
+                <input type="file" id="imageInput" name="image" style="display: none;">
                 <label for="imageInput" class="upload-label">
                 <span class="drag-drop-text">
                 <i class="bi bi-file-earmark-plus-fill fa-plus mb-3"></i>
@@ -31,10 +31,10 @@
             <img   id="outputImage" src="" alt="Processed Image" style=" display: none;">
                <!-- button-->        
           <div class="button-container">
-            <button id="removeButton" class="btn btn-danger btn-lg"><i class="bi bi-x-circle"></i></button>
-            <button type="submit" id="submitButton" class="btn-hover color-5 btn-lg">Remove Bg</button>
-            <button id="reloadButton" class="btn btn-danger btn-lg"><i class="bi bi-x-lg"></i></button>
-            <button id="downloadButton"class="btn-hover color-6 btn-lg">Download</button>
+            <button id="removeButton" class="btn btn-danger btn-lg">Reset</button>
+            <button type="submit" id="submitButton" class="btn btn-primary btn-lg"> Remove Background</button>
+            <button id="reloadButton" class="btn btn-warning btn-lg">Upload</button>
+            <button id="downloadButton"class="btn btn-success btn-lg">Download Image</button>
           </div>
         </div>
         <div id="error-message" class="error-message my-2" style="display:none;"></div>
@@ -106,29 +106,13 @@
                     $('#error-message').show();
                     return;
                 }
-        $('#imageInput')[0].files = files; // Update file input's files
+        $('#imageInput')[0].image = files; // Update file input's files
         handleFiles(files);
         });
-          // Combine select button and drag and drop
-          dropArea.on('click', function() {
-                $('#imageInput').click();
-            });
-               // input file handle
-          $('#imageInput').on('change', function(e) {
-                var files = e.target.files;
-                if (files.length === 0) {
-                    $('#error-message').text('Please select at least one file.');
-                    $('#error-message').show();
-                } else if (files.length > 1) {
-                    $('#error-message').text('You can upload a maximum of 1 files.');
-                    $('#error-message').show();
-                } else {
-                    $('#error-message').hide();
-                    handleFiles(files);
-                }
-            });
 
-    
+        $('#imageInput').change(function(){
+        handleFiles(this.files);
+          });
 
         function handleFiles(files) {
         if(files.length > 0) {
@@ -176,8 +160,8 @@
                 var form = $('#uploadForm')[0];
                 // Create FormData object
                 var formData = new FormData(form);
-                var files = $('#imageInput')[0].files;
-                formData.append('files', files);
+              
+          
                 progress.show(); 
                 progressBar.css('width', '0%').text('0%'); // Reset progress bar
                 sppiner.show(); // Show spinner container when upload button clicked

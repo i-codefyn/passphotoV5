@@ -502,14 +502,15 @@ main {
   }
 
   .image-container img {
-      padding: 20px;
-border-radius: 10px;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-height: 300px; /* Specify height */
-width: 600px; /* Specify width */
-border: 2px solid #333; /* Add border */
-    width: 100%;
-    height: auto;
+   padding: 20px;
+   border-radius: 10px;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   height: 500px; /* Specify height */
+   width: 600px; /* Specify width */
+   border: 2px solid #333; /* Add border */
+   width: 100%;
+
+
   }
 
   .button-container {
@@ -528,7 +529,7 @@ border: 2px solid #333; /* Add border */
   }
 
 .centered-container {
-position: absolute;
+ position: absolute;
 top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
@@ -946,7 +947,65 @@ align-items: center; /* Center vertically */
     border-bottom-right-radius: 5px;
   }
 }
-/*  */
+/* footer icons */
+.instagram {
+  cursor: pointer;
+  background: pink;
+	background: -webkit-radial-gradient(33% 100% circle, #515ECF 4%, #9B36B7 30%, #D92E7F 62%, #F15245 85%, #FED373);
+	background: radial-gradient(circle at 33% 100%, #ff3be7 4%, #ff3be7 28%, #03ffe8 62%, #F15245 85%, #FED373);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	font-size: 30px;
+	};
+  .instagram:hover {
+    background: -webkit-radial-gradient(33% 100% circle, #FED373 4%, #F15245 30%, #D92E7F 62%, #9B36B7 85%, #515ECF);
+    background: radial-gradient(circle at 33% 100%, #FED373 4%, #F15245 30%, #D92E7F 62%, #9B36B7 85%, #515ECF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+.youtube {
+  cursor: pointer;
+  background: rgb(131,58,180);
+  background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	font-size: 30px;
+	};
+  .youtube:hover {
+    background: rgb(131,58,180);
+    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+.x {
+  cursor: pointer;
+  background: rgb(3,14,40);
+  background: linear-gradient(90deg, rgba(3,14,40,1) 0%, rgba(30,26,62,1) 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	font-size: 30px;
+	};
+  .x:hover {
+    background: rgb(3,14,40);
+    background: linear-gradient(90deg, rgba(3,14,40,1) 0%, rgba(30,26,62,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+.fb {
+  cursor: pointer;
+  background: rgb(29,92,236);
+  background: linear-gradient(90deg, rgba(29,92,236,1) 0%, rgba(27,0,230,1) 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	font-size: 30px;
+	};
+  .fb:hover {
+    background: rgb(29,92,236);
+    background: linear-gradient(90deg, rgba(29,92,236,1) 0%, rgba(27,0,230,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
 /* footer */
 
 

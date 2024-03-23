@@ -50,19 +50,24 @@ class BgRemoveView(SuccessMessageMixin,View):
     def post(self, request, *args, **kwargs):
 
         if request.method == "POST":
-            image = request.FILES['files']
-            img = PIL.Image.open(image)
+            
+            if 'image' in request.FILES:
+                image = request.FILES['image']
+                img = PIL.Image.open(image)
+                processed_image = remove(img)
+                buffered = io.BytesIO()
+                processed_image.save(buffered, format="PNG")
+                processed_image_bytes = buffered.getvalue()
+                # Encode the processed image bytes to base64 and decode to string
+                processed_image_base64 = base64.b64encode(processed_image_bytes).decode('utf-8')
+                return JsonResponse({'image': processed_image_base64})
+            else:
+                return JsonResponse({'error': 'No image provided'},status=400)
 
-                # # # Resize the image
-            processed_image = remove(img)
-            buffered = io.BytesIO()
-            processed_image.save(buffered, format="PNG")
-            processed_image_bytes = buffered.getvalue()
-            # Encode the processed image bytes to base64 and decode to string
-            processed_image_base64 = base64.b64encode(processed_image_bytes).decode('utf-8')
-            return JsonResponse({'image': processed_image_base64})
+
         else:
-            return JsonResponse({'error': 'No image provided'})
+            return JsonResponse({'error': 'No image provided'}, status=405)
+
 
 
 class PassPhotosCreaterView(SuccessMessageMixin,View):
